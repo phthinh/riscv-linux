@@ -2,39 +2,22 @@
 
 This is a port of Linux kernel for the [RISC-V](http://riscv.org/)
 instruction set architecture.
-Development is currently based on the
-[4.6 longterm branch](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/log/?h=linux-4.6.y).
+This is originally cloned from the branch priv-1.9 of [riscv-linux](https://github.com/riscv/riscv-linux). It is noticed that this branch is removed from the origin repository.
 
+This kernel sources can be built using the riscv-tools (gcc 6.1.0) that are used in [fpga-zynq](https://github.com/ucb-bar/fpga-zynq).
+The linux can run on a Rocket Chip hosted on Zedboard. 
 
 ## Obtaining kernel sources
 
-### Master
+	   $ git clone https://github.com/phthinh/riscv-linux.git linux-4.6.2
 
-Overlay the `riscv` architecture-specific subtree onto an upstream release:
-
-        $ curl -L https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.6.2.tar.xz | tar -xJ
+        $ curl -L https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.6.2.tar.xz | tar -xJKf
         $ cd linux-4.6.2
-        $ git init
-        $ git remote add -t master origin https://github.com/riscv/riscv-linux.git
-        $ git fetch
-        $ git checkout -f -t origin/master
-
-Note that the `-t <branch>` option minimizes the history fetched.
-To add another branch:
-
-        $ git remote set-branches --add origin <branch>
-        $ git fetch
-
-### Full kernel source trees
-
-For convenience, full kernel source trees are maintained on separate
-branches tracking
-[linux-stable](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git):
-
-* `linux-4.6.y-riscv`
-* `linux-3.14.y-riscv` (historical)
 
 ## Building the kernel image
+
+1. Apply some modifications (if required):
+	   $ git apply patch.diff
 
 1. Create kernel configuration based on architecture defaults:
 
@@ -46,15 +29,7 @@ branches tracking
 
 1. Build the uncompressed kernel image:
 
-        $ make -j4 ARCH=riscv vmlinux
-
-1. Boot the kernel in the functional simulator, optionally specifying a
-   raw disk image for the root filesystem:
-
-        $ spike +disk=path/to/root.img bbl vmlinux
-
-   `bbl` (the Berkeley Boot Loader) is available from the
-   [riscv-pk](https://github.com/riscv/riscv-pk) repository.
+        $ make -j8 ARCH=riscv vmlinux
 
 ## Exporting kernel headers
 
